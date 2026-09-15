@@ -170,19 +170,20 @@
   }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(10px); filter: blur(14px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
   }
 
   @keyframes dropIn {
-    from { opacity: 0; transform: translateY(-8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(-8px); filter: blur(14px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
   }
 
   @media (prefers-reduced-motion: reduce) {
     header, .actions-label, .account-btn {
       animation: none !important;
       opacity: 1 !important;
+      filter: none !important;
     }
     .account-btn {
       transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
