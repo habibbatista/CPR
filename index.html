@@ -31,13 +31,15 @@
     margin: 0;
     padding: 0;
     width: 100%;
+    height: 100%;
+    overflow: hidden;
   }
 
   body {
     background: var(--paper);
     font-family: 'Red Hat Text', sans-serif;
     color: var(--ink);
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     -webkit-font-smoothing: antialiased;
@@ -46,7 +48,7 @@
   header {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 100;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -58,6 +60,32 @@
     backdrop-filter: saturate(180%) blur(20px);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
     animation: dropIn 0.5s var(--ease) both;
+  }
+
+  .logout-btn {
+    -webkit-tap-highlight-color: transparent;
+    appearance: none;
+    display: none;
+    position: absolute;
+    right: calc(20px + env(safe-area-inset-right));
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: none;
+    background: var(--paper);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s var(--ease);
+  }
+
+  .logout-btn:active {
+    background: linear-gradient(180deg, var(--blue-1) 0%, var(--blue-2) 100%);
+    color: #FFFFFF;
+    transform: translateY(-50%) scale(0.95);
   }
 
   .logo-btn {
@@ -97,10 +125,84 @@
 
   main {
     flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    background: var(--paper);
     padding: 24px calc(20px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(20px + env(safe-area-inset-left));
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 28px;
+    transition: transform 0.45s var(--ease);
+    transform: translateX(100%);
+    z-index: 1;
+  }
+
+  .screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 16, 32, 0);
+    transition: background 0.45s var(--ease);
+    pointer-events: none;
+  }
+
+  #screen-select {
+    transform: translateX(0);
+    z-index: 1;
+  }
+
+  #screen-select.pushed-back {
+    transform: translateX(-30%);
+  }
+
+  #screen-select.pushed-back::after {
+    background: rgba(8, 16, 32, 0.35);
+  }
+
+  #screen-email.active {
+    transform: translateX(0);
+    z-index: 2;
+  }
+
+  .page-title {
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-align: center;
+    margin: 0;
+    opacity: 0;
+    animation: fadeUp 0.5s var(--ease) 0.02s both;
+  }
+
+  .back-btn {
+    -webkit-tap-highlight-color: transparent;
+    appearance: none;
+    position: absolute;
+    top: 24px;
+    left: calc(20px + env(safe-area-inset-left));
+    background: none;
+    border: none;
+    padding: 6px;
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 26px;
+    color: var(--blue-2);
+    cursor: pointer;
+    transition: transform 0.15s var(--ease), opacity 0.2s ease;
+  }
+
+  .back-btn:active {
+    transform: translateX(-2px) scale(0.92);
+    opacity: 0.6;
   }
 
   .actions {
@@ -178,6 +280,80 @@
     transform: translateX(2px);
   }
 
+  .email-panel {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .email-input {
+    -webkit-appearance: none;
+    width: 100%;
+    font-family: 'Red Hat Text', sans-serif;
+    font-size: 16px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: none;
+    background: #FFFFFF;
+    color: var(--ink);
+    outline: none;
+  }
+
+  .email-input::placeholder {
+    color: var(--ink-soft);
+  }
+
+  .domain-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .domain-btn {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 9px 14px;
+    border-radius: 10px;
+    border: none;
+    background: #FFFFFF;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background 0.2s var(--ease), color 0.2s ease, transform 0.15s var(--ease);
+  }
+
+  .domain-btn:active {
+    background: linear-gradient(180deg, var(--blue-1) 0%, var(--blue-2) 100%);
+    color: #FFFFFF;
+    transform: scale(0.94);
+  }
+
+  .continue-btn {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(180deg, var(--blue-1) 0%, var(--blue-2) 100%);
+    color: #FFFFFF;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: transform 0.15s var(--ease), filter 0.2s ease;
+  }
+
+  .continue-btn:active {
+    transform: scale(0.97);
+    filter: brightness(0.92);
+  }
+
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(10px); filter: blur(14px); }
     to { opacity: 1; transform: translateY(0); filter: blur(0); }
@@ -204,12 +380,12 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    header, .actions-label, .account-btn {
+    header, .actions-label, .account-btn, .page-title {
       animation: none !important;
       opacity: 1 !important;
       filter: none !important;
     }
-    .account-btn {
+    .account-btn, .screen {
       transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
     }
     .account-btn:active {
@@ -217,15 +393,43 @@
     }
   }
 
-  @media (min-width: 640px) {
+  @media (min-width: 900px) {
     header { padding-left: calc(32px + env(safe-area-inset-left)); padding-right: calc(32px + env(safe-area-inset-right)); }
-    main { padding-left: calc(32px + env(safe-area-inset-left)); padding-right: calc(32px + env(safe-area-inset-right)); }
+    .screen { padding-left: calc(32px + env(safe-area-inset-left)); padding-right: calc(32px + env(safe-area-inset-right)); }
+  }
+
+  @media (min-width: 900px) {
+    main {
+      background: radial-gradient(circle at 50% 35%, #FFFFFF 0%, var(--paper) 72%);
+    }
+
+    .actions, .email-panel {
+      max-width: 460px;
+      background: #FFFFFF;
+      padding: 40px 40px 44px;
+      border-radius: 24px;
+    }
+
+    .actions-label {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .page-title {
+      font-size: 36px;
+    }
+
+    .account-btn {
+      padding: 18px 22px;
+      font-size: 17px;
+    }
   }
 </style>
 </head>
 <body ontouchstart="">
 
 <header>
+  <button class="logout-btn" id="logout-btn" type="button" onclick="cerrarSesion()">Cerrar sesión</button>
   <button class="logo-btn" type="button" aria-label="Ir a la página principal">
     <img src="images/logo.png" alt="Logo del colegio">
   </button>
@@ -233,26 +437,93 @@
 </header>
 
 <main>
-  <div class="actions">
-    <p class="actions-label">Crear una cuenta</p>
-    <button class="account-btn" type="button">
-      Estudiante
-      <span class="arrow">›</span>
-    </button>
-    <button class="account-btn" type="button">
-      Profesor
-      <span class="arrow">›</span>
-    </button>
-    <button class="account-btn" type="button">
-      Administrador
-      <span class="arrow">›</span>
-    </button>
-    <button class="account-btn" type="button">
-      Padre
-      <span class="arrow">›</span>
-    </button>
+  <div class="screen" id="screen-select">
+    <h1 class="page-title">Selecciona el tipo de cuenta</h1>
+    <div class="actions">
+      <p class="actions-label">Crear una cuenta</p>
+      <button class="account-btn" type="button" onclick="pushScreen()">
+        Estudiante
+        <span class="arrow">›</span>
+      </button>
+      <button class="account-btn" type="button" onclick="pushScreen()">
+        Profesor
+        <span class="arrow">›</span>
+      </button>
+      <button class="account-btn" type="button" onclick="pushScreen()">
+        Administrador
+        <span class="arrow">›</span>
+      </button>
+      <button class="account-btn" type="button" onclick="pushScreen()">
+        Padre
+        <span class="arrow">›</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-email">
+    <button class="back-btn" type="button" onclick="popScreen()" aria-label="Volver">‹</button>
+    <h1 class="page-title">¿Cuál es tu correo?</h1>
+    <div class="email-panel">
+      <input class="email-input" id="email-input" type="email" placeholder="tu@correo.com" autocomplete="email">
+      <div class="domain-row">
+        <button class="domain-btn" type="button" onclick="applyDomain('@gmail.com')">@gmail</button>
+        <button class="domain-btn" type="button" onclick="applyDomain('@icloud.com')">@iCloud</button>
+        <button class="domain-btn" type="button" onclick="applyDomain('@hotmail.com')">@hotmail</button>
+        <button class="domain-btn" type="button" onclick="applyDomain('@outlook.com')">@outlook</button>
+        <button class="domain-btn" type="button" onclick="applyDomain('@yahoo.com')">@yahoo</button>
+        <button class="domain-btn" type="button" onclick="applyDomain('@live.com')">@live</button>
+        <button class="domain-btn" type="button" onclick="applyDomain('@proton.me')">@proton</button>
+      </div>
+      <button class="continue-btn" type="button">Continuar</button>
+    </div>
   </div>
 </main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  // Reemplaza esto con la config real de tu proyecto
+  // (Firebase Console → ⚙️ Configuración del proyecto → tus apps → SDK setup)
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_PROYECTO.firebaseapp.com",
+    projectId: "TU_PROYECTO",
+    storageBucket: "TU_PROYECTO.appspot.com",
+    messagingSenderId: "TU_SENDER_ID",
+    appId: "TU_APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  auth.onAuthStateChanged(function (user) {
+    var logoutBtn = document.getElementById('logout-btn');
+    logoutBtn.style.display = user ? 'inline-flex' : 'none';
+  });
+
+  function cerrarSesion() {
+    auth.signOut();
+  }
+
+  function pushScreen() {
+    document.getElementById('screen-select').classList.add('pushed-back');
+    document.getElementById('screen-email').classList.add('active');
+  }
+
+  function popScreen() {
+    document.getElementById('screen-select').classList.remove('pushed-back');
+    document.getElementById('screen-email').classList.remove('active');
+  }
+
+  function applyDomain(domain) {
+    var input = document.getElementById('email-input');
+    var current = input.value.split('@')[0];
+    input.value = current + domain;
+    input.focus();
+  }
+</script>
 
 </body>
 </html>
