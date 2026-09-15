@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0A1B42">
+<title>Portal Escolar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500;700;900&family=Red+Hat+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #16233D;
+    --ink-soft: #45526B;
+    --paper: #F8FAFD;
+    --line: #DBE0E8;
+    --header-dark: #0A1B42;
+    --header-dark-2: #132A63;
+    --blue-1: #2E6BE0;
+    --blue-2: #103A9C;
+    --blue-hover-1: #2559C4;
+    --blue-hover-2: #0C2E80;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  body {
+    background: var(--paper);
+    font-family: 'Red Hat Text', sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    padding-top: calc(16px + env(safe-area-inset-top));
+    padding-left: calc(20px + env(safe-area-inset-left));
+    padding-right: calc(20px + env(safe-area-inset-right));
+    background: #F4EFE1;
+    border-bottom: 1px solid #E3DAC2;
+  }
+
+  .logo-btn {
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .logo-btn:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  .logo-btn img {
+    display: block;
+    width: 40px;
+    height: 40px;
+  }
+
+  .school-name {
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    margin-left: 10px;
+    color: var(--ink);
+  }
+
+  main {
+    flex: 1;
+    padding: 24px calc(20px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(20px + env(safe-area-inset-left));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .actions {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .actions-label {
+    font-family: 'Red Hat Text', sans-serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-align: center;
+    margin: 0 0 6px;
+  }
+
+  .account-btn {
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 15px 20px;
+    border-radius: 0;
+    border: 1px solid var(--line);
+    background: #FFFFFF;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: filter 0.15s ease, border-color 0.15s ease;
+  }
+
+  .account-btn:hover {
+    border-color: var(--blue-1);
+  }
+
+  .account-btn .arrow {
+    color: var(--ink-soft);
+    font-size: 18px;
+  }
+
+  .account-btn.primary {
+    background: linear-gradient(180deg, var(--blue-1) 0%, var(--blue-2) 100%);
+    border-color: var(--blue-2);
+    color: #FFFFFF;
+  }
+
+  .account-btn.primary .arrow { color: #FFFFFF; }
+
+  .account-btn.primary:hover {
+    background: linear-gradient(180deg, var(--blue-hover-1) 0%, var(--blue-hover-2) 100%);
+    border-color: var(--blue-hover-2);
+  }
+
+  .account-btn:focus-visible {
+    outline: 2px solid var(--blue-2);
+    outline-offset: 2px;
+  }
+
+  .account-btn:active {
+    background: linear-gradient(180deg, var(--blue-1) 0%, var(--blue-2) 100%);
+    border-color: var(--blue-2);
+    color: #FFFFFF;
+  }
+
+  .account-btn:active .arrow {
+    color: #FFFFFF;
+  }
+
+  .account-btn.primary:active {
+    background: linear-gradient(180deg, var(--blue-hover-2) 0%, #081F5C 100%);
+    border-color: #081F5C;
+  }
+
+  @media (min-width: 640px) {
+    header { padding-left: calc(32px + env(safe-area-inset-left)); padding-right: calc(32px + env(safe-area-inset-right)); }
+    main { padding-left: calc(32px + env(safe-area-inset-left)); padding-right: calc(32px + env(safe-area-inset-right)); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <button class="logo-btn" type="button" aria-label="Ir a la página principal">
+    <img src="images/logo.png" alt="Logo del colegio">
+  </button>
+  <span class="school-name">Colegio Palma Real</span>
+</header>
+
+<main>
+  <div class="actions">
+    <p class="actions-label">Crear una cuenta</p>
+    <button class="account-btn primary" type="button">
+      Estudiante
+      <span class="arrow">›</span>
+    </button>
+    <button class="account-btn" type="button">
+      Profesor
+      <span class="arrow">›</span>
+    </button>
+    <button class="account-btn" type="button">
+      Administrador
+      <span class="arrow">›</span>
+    </button>
+  </div>
+</main>
+
+</body>
+</html>
