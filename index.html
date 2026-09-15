@@ -143,9 +143,18 @@
   }
 
   .actions .account-btn:nth-of-type(1) { animation-delay: 0.1s; }
-  .actions .account-btn:nth-of-type(2) { animation-delay: 0.16s; }
-  .actions .account-btn:nth-of-type(3) { animation-delay: 0.22s; }
-  .actions .account-btn:nth-of-type(4) { animation-delay: 0.28s; }
+  .actions .account-btn:nth-of-type(2) {
+    animation-name: fadeUpScale2;
+    animation-delay: 0.16s;
+  }
+  .actions .account-btn:nth-of-type(3) {
+    animation-name: fadeUpScale3;
+    animation-delay: 0.22s;
+  }
+  .actions .account-btn:nth-of-type(4) {
+    animation-name: fadeUpScale4;
+    animation-delay: 0.28s;
+  }
 
   .account-btn .arrow {
     color: var(--ink-soft);
@@ -172,6 +181,21 @@
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(10px); filter: blur(14px); }
     to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+
+  @keyframes fadeUpScale2 {
+    from { opacity: 0; transform: translateY(10px) scale(0.88); filter: blur(14px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  }
+
+  @keyframes fadeUpScale3 {
+    from { opacity: 0; transform: translateY(10px) scale(0.8); filter: blur(14px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  }
+
+  @keyframes fadeUpScale4 {
+    from { opacity: 0; transform: translateY(10px) scale(0.7); filter: blur(14px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
   }
 
   @keyframes dropIn {
