@@ -22,6 +22,7 @@
     --blue-2: #103A9C;
     --blue-hover-1: #2559C4;
     --blue-hover-2: #0C2E80;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   * { box-sizing: border-box; }
@@ -39,25 +40,38 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    -webkit-font-smoothing: antialiased;
   }
 
   header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     display: flex;
     align-items: center;
     padding: 16px 20px;
     padding-top: calc(16px + env(safe-area-inset-top));
     padding-left: calc(20px + env(safe-area-inset-left));
     padding-right: calc(20px + env(safe-area-inset-right));
-    background: #F4EFE1;
-    border-bottom: 1px solid #E3DAC2;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    animation: dropIn 0.5s var(--ease) both;
   }
 
   .logo-btn {
+    -webkit-tap-highlight-color: transparent;
     appearance: none;
     background: none;
     border: none;
     padding: 0;
     cursor: pointer;
+    border-radius: 11px;
+    transition: transform 0.25s var(--ease);
+  }
+
+  .logo-btn:active {
+    transform: scale(0.9);
   }
 
   .logo-btn:focus-visible {
@@ -102,15 +116,19 @@
     color: var(--ink-soft);
     text-align: center;
     margin: 0 0 6px;
+    opacity: 0;
+    animation: fadeUp 0.5s var(--ease) 0.05s both;
   }
 
   .account-btn {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
     font-family: 'Red Hat Display', sans-serif;
     font-weight: 500;
     font-size: 16px;
-    padding: 15px 20px;
-    border-radius: 0;
-    border: 1px solid var(--line);
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: none;
     background: #FFFFFF;
     color: var(--ink);
     cursor: pointer;
@@ -118,29 +136,20 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: filter 0.15s ease, border-color 0.15s ease;
+    transition: background 0.25s var(--ease), transform 0.15s var(--ease), color 0.2s ease;
+    opacity: 0;
+    animation: fadeUp 0.5s var(--ease) both;
   }
 
-  .account-btn:hover {
-    border-color: var(--blue-1);
-  }
+  .actions .account-btn:nth-of-type(1) { animation-delay: 0.1s; }
+  .actions .account-btn:nth-of-type(2) { animation-delay: 0.16s; }
+  .actions .account-btn:nth-of-type(3) { animation-delay: 0.22s; }
+  .actions .account-btn:nth-of-type(4) { animation-delay: 0.28s; }
 
   .account-btn .arrow {
     color: var(--ink-soft);
     font-size: 18px;
-  }
-
-  .account-btn.primary {
-    background: linear-gradient(180deg, var(--blue-1) 0%, var(--blue-2) 100%);
-    border-color: var(--blue-2);
-    color: #FFFFFF;
-  }
-
-  .account-btn.primary .arrow { color: #FFFFFF; }
-
-  .account-btn.primary:hover {
-    background: linear-gradient(180deg, var(--blue-hover-1) 0%, var(--blue-hover-2) 100%);
-    border-color: var(--blue-hover-2);
+    transition: transform 0.25s var(--ease), color 0.2s ease;
   }
 
   .account-btn:focus-visible {
@@ -150,17 +159,36 @@
 
   .account-btn:active {
     background: linear-gradient(180deg, var(--blue-1) 0%, var(--blue-2) 100%);
-    border-color: var(--blue-2);
     color: #FFFFFF;
+    transform: scale(0.97);
   }
 
   .account-btn:active .arrow {
     color: #FFFFFF;
+    transform: translateX(2px);
   }
 
-  .account-btn.primary:active {
-    background: linear-gradient(180deg, var(--blue-hover-2) 0%, #081F5C 100%);
-    border-color: #081F5C;
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    header, .actions-label, .account-btn {
+      animation: none !important;
+      opacity: 1 !important;
+    }
+    .account-btn {
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+    .account-btn:active {
+      transform: none;
+    }
   }
 
   @media (min-width: 640px) {
@@ -169,7 +197,7 @@
   }
 </style>
 </head>
-<body>
+<body ontouchstart="">
 
 <header>
   <button class="logo-btn" type="button" aria-label="Ir a la página principal">
@@ -181,7 +209,7 @@
 <main>
   <div class="actions">
     <p class="actions-label">Crear una cuenta</p>
-    <button class="account-btn primary" type="button">
+    <button class="account-btn" type="button">
       Estudiante
       <span class="arrow">›</span>
     </button>
@@ -191,6 +219,10 @@
     </button>
     <button class="account-btn" type="button">
       Administrador
+      <span class="arrow">›</span>
+    </button>
+    <button class="account-btn" type="button">
+      Padre
       <span class="arrow">›</span>
     </button>
   </div>
