@@ -512,21 +512,23 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 <script>
-  // Reemplaza esto con la config real de tu proyecto
-  // (Firebase Console → ⚙️ Configuración del proyecto → tus apps → SDK setup)
+  // Config real de Colegio Palma Real
   const firebaseConfig = {
-    apiKey: "TU_API_KEY",
-    authDomain: "TU_PROYECTO.firebaseapp.com",
-    projectId: "TU_PROYECTO",
-    storageBucket: "TU_PROYECTO.appspot.com",
-    messagingSenderId: "TU_SENDER_ID",
-    appId: "TU_APP_ID"
+    apiKey: "AIzaSyCG-D90MtN300oFSX4btZ9AW-1ujNuUhw4",
+    authDomain: "colegio-palma-real.firebaseapp.com",
+    projectId: "colegio-palma-real",
+    storageBucket: "colegio-palma-real.firebasestorage.app",
+    messagingSenderId: "33695955978",
+    appId: "1:33695955978:web:a5f6ba09818fbd77e7f3f3",
+    measurementId: "G-GXVS4R55SG"
   };
 
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
+  if (firebase.analytics) { firebase.analytics(); }
 
   auth.onAuthStateChanged(function (user) {
     var logoutBtn = document.getElementById('logout-btn');
