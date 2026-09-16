@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0A1B42">
+<meta name="theme-color" content="#FFFFFF">
 <title>Portal Escolar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,7 +56,7 @@
     padding-top: calc(16px + env(safe-area-inset-top));
     padding-left: calc(20px + env(safe-area-inset-left));
     padding-right: calc(20px + env(safe-area-inset-right));
-    background: rgba(255, 255, 255, 0.82);
+    background: #FFFFFF;
     backdrop-filter: saturate(180%) blur(20px);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
     animation: dropIn 0.5s var(--ease) both;
@@ -354,6 +354,33 @@
     filter: brightness(0.92);
   }
 
+  .form-message {
+    font-family: 'Red Hat Text', sans-serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-align: center;
+    margin: 0;
+    min-height: 16px;
+  }
+
+  .form-message.error {
+    color: #B3261E;
+  }
+
+  .text-link {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    background: none;
+    border: none;
+    font-family: 'Red Hat Text', sans-serif;
+    font-size: 13px;
+    color: var(--blue-2);
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 4px;
+    margin: 0 auto;
+  }
+
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(10px); filter: blur(14px); }
     to { opacity: 1; transform: translateY(0); filter: blur(0); }
@@ -441,19 +468,19 @@
     <h1 class="page-title">Selecciona el tipo de cuenta</h1>
     <div class="actions">
       <p class="actions-label">Crear una cuenta</p>
-      <button class="account-btn" type="button" onclick="pushScreen()">
+      <button class="account-btn" type="button" onclick="pushScreen('estudiante')">
         Estudiante
         <span class="arrow">›</span>
       </button>
-      <button class="account-btn" type="button" onclick="pushScreen()">
+      <button class="account-btn" type="button" onclick="pushScreen('profesor')">
         Profesor
         <span class="arrow">›</span>
       </button>
-      <button class="account-btn" type="button" onclick="pushScreen()">
+      <button class="account-btn" type="button" onclick="pushScreen('administrador')">
         Administrador
         <span class="arrow">›</span>
       </button>
-      <button class="account-btn" type="button" onclick="pushScreen()">
+      <button class="account-btn" type="button" onclick="pushScreen('padre')">
         Padre
         <span class="arrow">›</span>
       </button>
@@ -474,7 +501,10 @@
         <button class="domain-btn" type="button" onclick="applyDomain('@live.com')">@live</button>
         <button class="domain-btn" type="button" onclick="applyDomain('@proton.me')">@proton</button>
       </div>
-      <button class="continue-btn" type="button">Continuar</button>
+      <input class="email-input" id="password-input" type="password" placeholder="Contraseña" autocomplete="new-password">
+      <p class="form-message" id="form-message"></p>
+      <button class="continue-btn" id="continue-btn" type="button" onclick="continuar()">Continuar</button>
+      <button class="text-link" id="mode-toggle" type="button" onclick="toggleMode()">¿Ya tienes cuenta? Inicia sesión</button>
     </div>
   </div>
 </main>
@@ -507,7 +537,11 @@
     auth.signOut();
   }
 
-  function pushScreen() {
+  var selectedRole = null;
+  var authMode = 'signup';
+
+  function pushScreen(role) {
+    selectedRole = role;
     document.getElementById('screen-select').classList.add('pushed-back');
     document.getElementById('screen-email').classList.add('active');
   }
@@ -515,6 +549,9 @@
   function popScreen() {
     document.getElementById('screen-select').classList.remove('pushed-back');
     document.getElementById('screen-email').classList.remove('active');
+    document.getElementById('email-input').value = '';
+    document.getElementById('password-input').value = '';
+    setMessage('');
   }
 
   function applyDomain(domain) {
@@ -522,6 +559,63 @@
     var current = input.value.split('@')[0];
     input.value = current + domain;
     input.focus();
+  }
+
+  function toggleMode() {
+    authMode = authMode === 'signup' ? 'login' : 'signup';
+    var continueBtn = document.getElementById('continue-btn');
+    var toggleBtn = document.getElementById('mode-toggle');
+    if (authMode === 'login') {
+      continueBtn.textContent = 'Iniciar sesión';
+      toggleBtn.textContent = '¿No tienes cuenta? Créala aquí';
+    } else {
+      continueBtn.textContent = 'Continuar';
+      toggleBtn.textContent = '¿Ya tienes cuenta? Inicia sesión';
+    }
+    setMessage('');
+  }
+
+  function setMessage(text, isError) {
+    var msg = document.getElementById('form-message');
+    msg.textContent = text || '';
+    msg.classList.toggle('error', !!isError);
+  }
+
+  function continuar() {
+    var email = document.getElementById('email-input').value.trim();
+    var password = document.getElementById('password-input').value;
+
+    if (!email || !password) {
+      setMessage('Ingresa tu correo y contraseña.', true);
+      return;
+    }
+
+    if (authMode === 'signup') {
+      if (!selectedRole) {
+        setMessage('Selecciona primero un tipo de cuenta.', true);
+        return;
+      }
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(function (cred) {
+          return db.collection('users').doc(cred.user.uid).set({
+            email: email,
+            role: selectedRole,
+            status: 'pending',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        })
+        .then(function () {
+          setMessage('Cuenta creada. Un administrador debe aprobarla antes de que puedas entrar.', false);
+        })
+        .catch(function (error) {
+          setMessage(error.message, true);
+        });
+    } else {
+      auth.signInWithEmailAndPassword(email, password)
+        .catch(function (error) {
+          setMessage(error.message, true);
+        });
+    }
   }
 </script>
 
